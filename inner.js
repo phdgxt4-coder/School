@@ -1,0 +1,24 @@
+'use strict';
+const $=s=>document.querySelector(s),m=$('#m'),q=new URLSearchParams(location.search);
+const ic=n=>`<svg class="ic"><use href="#i-${n}"/></svg>`;
+const SUBJ=[['math','رياضيات','الجبر والهندسة والتفاضل بشرح مبسّط وتدريبات متدرجة.'],['book','لغة عربية','النحو والأدب والنصوص والبلاغة في مكان واحد.'],['globe','لغة إنجليزية','القواعد والمفردات والقراءة والمحادثة.'],['atom','فيزياء','المفاهيم والقوانين مع حل مسائل خطوة بخطوة.'],['flask','كيمياء','التفاعلات والعناصر والحسابات الكيميائية.'],['leaf','أحياء','الكائنات الحية وأجهزة الجسم والوراثة.'],['hist','تاريخ','أحداث وحضارات مرتبة زمنيًا.'],['map','جغرافيا','الخرائط والموارد والسكان والبيئة.']];
+const NEWS=[['إعلان','بدء التسجيل على المنصة','يمكن للطلاب وأولياء الأمور والمدرسين إنشاء حساباتهم الآن.',['أصبح بإمكان الطلاب وأولياء الأمور والمدرسين إنشاء حساباتهم على المنصة، واختيار نوع الحساب المناسب عند التسجيل.','يحتاج التسجيل إلى رقم هاتف وكلمة مرور فقط، وبعدها تفتح لك لوحة التحكم الخاصة بك مباشرة.']],['دراسة','المحتوى التعليمي','سيتم رفع الدروس والفيديوهات تباعًا من المدرسين.',['يرفع المدرسون الدروس والفيديوهات والملفات تباعًا، وتظهر في صفحة كل مادة فور رفعها.','تابع صفحة المادة التي تدرسها لتصلك أحدث الدروس.']],['امتحانات','الامتحانات الإلكترونية','امتحانات بتصحيح تلقائي ونتائج فورية.',['تتيح المنصة امتحانات إلكترونية تُصحَّح تلقائيًا وتظهر نتيجتها للطالب فور التسليم.','يتابع ولي الأمر الدرجات من حسابه، ويراجع المدرس النتائج من لوحته.']]];
+const crumb=(...a)=>`<nav class="crumb"><a href="index.html">الرئيسية</a>${a.map(([t,h])=>`<span>/</span>${h?`<a href="${h}">${t}</a>`:`<span>${t}</span>`}`).join('')}</nav>`;
+const skel='<div class="skp"><div class="sk" style="width:30%"></div><div class="sk"></div><div class="sk" style="width:70%"></div></div>';
+const TABS=[['book','الدروس','لا توجد دروس بعد','سيظهر هنا ما يرفعه المدرسون.'],['video','الفيديوهات','لا توجد فيديوهات بعد','ستظهر الفيديوهات هنا فور رفعها.'],['edit','الامتحانات','لا توجد امتحانات','ستظهر مواعيدها هنا.'],['file','الملفات','لا توجد ملفات','ستظهر الملفات والمذكرات هنا.']];
+const chips=c=>`<div class="chips">${SUBJ.map(([,t],k)=>`<a href="subject.html?s=${k}" class="${k===c?'on':''}">${t}</a>`).join('')}</div>`;
+function subject(){const i=+q.get('s'),s=SUBJ[i];
+ if(!s){document.title='المواد الدراسية | مدرسة التناغة الشرقية';m.innerHTML=crumb(['المواد'])+'<div class="head"><h3>المواد الدراسية</h3><p>اختر مادة لتصل إلى دروسها وامتحاناتها.</p></div><div class="grid4">'+SUBJ.map(([c,t],k)=>`<a class="card sub" href="subject.html?s=${k}"><div class="ico">${ic(c)}</div><h4>${t}</h4></a>`).join('')+'</div>';return}
+ document.title=s[1]+' | مدرسة التناغة الشرقية';
+ m.innerHTML=crumb(['المواد','subject.html'],[s[1]])+`<div class="ph1"><div class="ico">${ic(s[0])}</div><div><h1>${s[1]}</h1><p>${s[2]}</p></div></div><div class="tabs" role="tablist">${TABS.map(([,t],k)=>`<button role="tab" class="${k?'':'on'}" data-t="${k}">${t}</button>`).join('')}</div><div id="pane"></div>`+chips(i);
+ const show=k=>{const[c,t,a,b]=TABS[k];$('#pane').innerHTML=`<div class="pane empty">${ic(c)}<h4 style="color:var(--navy);margin-top:8px">${a}</h4><div>${b}</div><a class="btn ghost" href="index.html#login">سجّل الدخول للمتابعة</a></div>`};
+ show(0);document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));show(+b.dataset.t)})}
+function news(){const i=q.get('n'),n=NEWS[+i];
+ if(i===null||!n){document.title='أخبار المدرسة | مدرسة التناغة الشرقية';m.innerHTML=crumb(['الأخبار'])+'<div class="head"><h3>أخبار المدرسة</h3></div><div class="grid3">'+NEWS.map(([g,t,d],k)=>`<a class="card news" href="news.html?n=${k}"><div class="ph"></div><span class="tag">${g}</span><h4>${t}</h4><p>${d}</p></a>`).join('')+'</div>';return}
+ document.title=n[1]+' | مدرسة التناغة الشرقية';
+ m.innerHTML=crumb(['الأخبار','news.html'],[n[1]])+`<article class="art"><span class="tag">${n[0]}</span><h1>${n[1]}</h1><div class="cover"></div>${n[3].map(p=>`<p>${p}</p>`).join('')}</article><div class="head" style="margin-top:56px"><h3 style="font-size:24px">أخبار أخرى</h3></div><div class="grid3">${NEWS.map(([g,t,d],k)=>k==i?'':`<a class="card news" href="news.html?n=${k}"><div class="ph"></div><span class="tag">${g}</span><h4>${t}</h4><p>${d}</p></a>`).join('')}</div>`}
+m.innerHTML=skel;setTimeout(()=>/news\.html/.test(location.pathname)?news():subject(),350);
+const nav=$('#nav'),pg=$('#pg');
+addEventListener('scroll',()=>{nav.classList.toggle('s',scrollY>20);pg.style.transform=`scaleX(${scrollY/Math.max(1,document.documentElement.scrollHeight-innerHeight)})`},{passive:true});
+$('#burger').onclick=()=>$('#links').classList.toggle('o');
+document.addEventListener('pointermove',e=>{const c=e.target.closest&&e.target.closest('.card');if(c){const r=c.getBoundingClientRect();c.style.setProperty('--x',e.clientX-r.left+'px');c.style.setProperty('--y',e.clientY-r.top+'px')}},{passive:true});
